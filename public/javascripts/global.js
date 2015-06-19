@@ -4,6 +4,8 @@ $(document).ready(function() {
 	populateTable();
 
 	$('#btnAddUser').on('click', addUser);
+
+    $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
 });
 
 function populateTable() {
@@ -91,6 +93,28 @@ function addUser(event) {
     else {
         // If errorCount is more than 0, error out
         alert('Please fill in all fields');
+        return false;
+    }
+}
+
+function deleteUser(event) {
+    event.preventDefault();
+
+    var confirmation = confirm('Are you sure you want to delete this user?');
+    if(confirmation === true) {
+        $.ajax({
+            type: 'DELETE',
+            url: '/users/deleteuser/' + $(this).attr('rel')
+        }).done(function(response) {
+            if(response.msg === '') {
+
+            } else {
+                alert('Error: ' + response.msg);
+            }
+
+            populateTable();
+        });
+    } else {
         return false;
     }
 }
